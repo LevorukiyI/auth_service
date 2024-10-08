@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: auth_service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        lob:
+          use_typed: true
+        format_sql: true
+    open-in-view: false
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+application:
+  security:
+    jwt:
+      secret-key: 5eekxbfUrc9marV/33k0yzgFxcuIHwIJyQ/IUd7HOMA=
+      access-token:
+        expiration: 86400000
+      refresh-token:
+        expiration: 604800000 # 7 days
