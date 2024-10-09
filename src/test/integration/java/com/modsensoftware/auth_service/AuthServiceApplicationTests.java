@@ -1,4 +1,4 @@
-package com.modsensoftware.book_service;
+package com.modsensoftware.auth_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
