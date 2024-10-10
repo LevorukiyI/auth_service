@@ -7,16 +7,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +53,12 @@ public class JwtService {
             Long expiration,
             JwtTokenType tokenType
     ){
+        // Получаем authorities из пользователя
+        List<String> authorities = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        claims.put("authorities", authorities);
+
         return Jwts
                 .builder()
                 .setClaims(claims)
@@ -64,18 +70,12 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, User user, JwtTokenType tokenType) {
-        Claims tokenClaims = extractAllClaims(token);
-        if(isTokenExpired(tokenClaims)){
-            return false;
-        }
-        if(!extractSubject(tokenClaims).equals(user.getUsername())){
-            return false;
-        }
-        if(!extractTokenType(tokenClaims).equals(tokenType.name())){
-            return false;
-        }
-        return true;
+    public Collection<? extends GrantedAuthority> extractAuthorities(Claims claims) {
+        List<?> authorities = claims.get("authorities", List.class);
+
+        return authorities.stream()
+                .map((authority) -> new SimpleGrantedAuthority((String) authority))
+                .collect(Collectors.toList());
     }
 
     public String extractSubject(String token) {
@@ -129,17 +129,4 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
-    public String extractAccessToken(HttpServletRequest request){
-        final String authorizationHeader = request.getHeader("Authorization");
-        return extractAccessToken(authorizationHeader);
-    }
-
-    public String extractAccessToken(String authorizationHeader){
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return null;
-        }
-        return authorizationHeader.substring(7);
-    }
-
 }

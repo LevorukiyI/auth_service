@@ -3,7 +3,6 @@ package com.modsensoftware.auth_service.services;
 import com.modsensoftware.auth_service.exceptions.UserAlreadyExistsException;
 import com.modsensoftware.auth_service.exceptions.UserNotFoundException;
 import com.modsensoftware.auth_service.models.JwtRefreshToken;
-import com.modsensoftware.auth_service.models.JwtTokenType;
 import com.modsensoftware.auth_service.models.User;
 import com.modsensoftware.auth_service.repositories.JwtRefreshTokenRepository;
 import com.modsensoftware.auth_service.repositories.UserRepository;
@@ -84,15 +83,12 @@ public class AuthenticationService {
         if(refreshToken == null){
             throw new IllegalArgumentException("Invalid header Authorization");
         }
-        final String userEmail = jwtService.extractSubject(refreshToken);
-        if (userEmail == null) {
-            throw new IllegalArgumentException("Invalid user email in refreshToken");
+        final String username = jwtService.extractSubject(refreshToken);
+        if (username == null) {
+            throw new IllegalArgumentException("Invalid username in refreshToken, username can't be null");
         }
-        User user = userRepository.findByUsername(userEmail)
-                .orElseThrow(() -> new UserNotFoundException("token contains invalid email"));
-        if (!jwtService.isTokenValid(refreshToken, user, JwtTokenType.REFRESH)) {
-            throw new IllegalArgumentException("Invalid refresh token");
-        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("token contains invalid username, there is no user with such username"));
 
         String accessToken = jwtService.generateAccessToken(user);
 

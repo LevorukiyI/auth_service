@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 public enum UserRole {
     USER(
             Set.of(
-                    Permission.BREATHE
+                    Permission.BREATHE,
+                    Permission.ANOTHER
             )
     );
 
