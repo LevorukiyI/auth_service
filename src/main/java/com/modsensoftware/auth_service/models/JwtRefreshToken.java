@@ -17,7 +17,7 @@ public class JwtRefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 2048)
     private String token;
 
     @Builder.Default
