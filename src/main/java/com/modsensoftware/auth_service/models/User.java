@@ -1,6 +1,6 @@
 package com.modsensoftware.auth_service.models;
 
-import com.modsensoftware.auth_service.authorities.UserRole;
+import com.modsensoftware.auth_service.authorities.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,11 +38,11 @@ public class User implements UserDetails {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column
-    private UserRole userRole = UserRole.USER;
+    private Role role = Role.USER;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.userRole.getAuthorities();
+        return this.role.getAuthorities();
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.modsensoftware.auth_service.utils;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class HttpRequestUtils {
+    public static String extractSecretKey(HttpServletRequest request){
+        return request.getHeader("x-api-key");
+    }
 
     public static String extractAccessToken(HttpServletRequest request){
         final String authorizationHeader = request.getHeader("Authorization");

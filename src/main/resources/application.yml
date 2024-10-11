@@ -22,3 +22,4 @@ application:
         expiration: 86400000
       refresh-token:
         expiration: 604800000 # 7 days
+    this-service-secret-api-key: "nfgbwtqcByOTIQtwvoI/pa/47uhRSrl03R58b3KJNFg="

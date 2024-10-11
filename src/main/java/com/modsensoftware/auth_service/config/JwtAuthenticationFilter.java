@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 
 @Component
@@ -32,10 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if(Arrays.stream(SecurityConfiguration.WHITE_LIST_URL).anyMatch(url -> request.getServletPath().contains(url))){
-            filterChain.doFilter(request, response);
-            return;
-        }
         String jwtAccessToken = HttpRequestUtils.extractAccessToken(request);
         if(jwtAccessToken == null){
             filterChain.doFilter(request, response);

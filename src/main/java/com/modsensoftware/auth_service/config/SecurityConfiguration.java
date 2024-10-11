@@ -32,6 +32,7 @@ public class SecurityConfiguration {
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
     private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final CorsConfigurationSource corsConfigurationSource;
     private final LogoutHandler logoutHandler;
@@ -51,12 +52,12 @@ public class SecurityConfiguration {
                                     .authenticated();
                         }
                 )
-
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(daoAuthenticationProvider)
+                .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                    logout.logoutUrl("/auth/logout")
+                    logout.logoutUrl("/logout")
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 );
