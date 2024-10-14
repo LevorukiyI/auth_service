@@ -30,6 +30,10 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        if(SecurityContextHolder.getContext().getAuthentication() != null){
+            filterChain.doFilter(request, response);
+            return;
+        }
         final String apiKey = HttpRequestUtils.extractSecretKey(request);
         if (apiKey == null) {
             filterChain.doFilter(request, response);
@@ -38,15 +42,12 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         if (!apiKey.equals(thisServiceSecretApiKey)) {
             throw new BadCredentialsException("Invalid API KEY. API KEY doesn't match to this service secret key");
         }
-
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            SecurityContextHolder.getContext().setAuthentication(
-                    new ApiKeyAuthentication(
-                            apiKey,
-                            Role.SECRET_KEY.getAuthorities()
-                    )
-            );
-        }
+        SecurityContextHolder.getContext().setAuthentication(
+                new ApiKeyAuthentication(
+                        apiKey,
+                        Role.SECRET_KEY.getAuthorities()
+                )
+        );
 
         filterChain.doFilter(request, response);
     }
