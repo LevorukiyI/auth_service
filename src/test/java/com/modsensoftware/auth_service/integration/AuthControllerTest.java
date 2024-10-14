@@ -1,4 +1,4 @@
-package com.modsensoftware.auth_service;
+package com.modsensoftware.auth_service.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modsensoftware.auth_service.config.ApplicationConfig;
