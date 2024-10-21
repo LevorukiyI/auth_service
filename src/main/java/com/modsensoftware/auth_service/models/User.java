@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column
-    private Role role = Role.USER;
+    private Role role = Role.LIBRARY_WORKER;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

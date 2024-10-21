@@ -8,17 +8,27 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 @AllArgsConstructor
 public enum Role {
     USER(
             Set.of(
-                    Permission.BREATHE,
-                    Permission.ANOTHER
+                    Permission.BREATHE
+            )
+    ),
+    LIBRARY_WORKER(
+            Set.of(
+                    Permission.RETURN_BOOK_FOR_USER,
+                    Permission.BORROW_BOOK_ON_USER,
+                    Permission.REGISTER_LIBRARY_SERVICE_USER
             )
     ),
     SECRET_KEY(
             Set.of(
-                    Permission.BREATHE
+                    Permission.BREATHE,
+                    Permission.RETURN_BOOK_FOR_USER,
+                    Permission.BORROW_BOOK_ON_USER,
+                    Permission.REGISTER_LIBRARY_SERVICE_USER
             )
     );
 

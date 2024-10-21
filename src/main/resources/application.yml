@@ -19,7 +19,10 @@ application:
     jwt:
       secret-key: 5eekxbfUrc9marV/33k0yzgFxcuIHwIJyQ/IUd7HOMA=
       access-token:
-        expiration: 86400000
+        expiration: 86400000 # 1 day in milliseconds
       refresh-token:
-        expiration: 604800000 # 7 days
+        expiration: 604800000 # 7 days in milliseconds
     this-service-secret-api-key: "nfgbwtqcByOTIQtwvoI/pa/47uhRSrl03R58b3KJNFg="
+
+server:
+  port: 8081
