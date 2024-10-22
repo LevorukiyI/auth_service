@@ -25,7 +25,7 @@ application:
     this-service-secret-api-key: "nfgbwtqcByOTIQtwvoI/pa/47uhRSrl03R58b3KJNFg="
 
 library-service:
-  secret-key: "4Ai+5X3ZuK4J+T44sp0RDL48WeieeIq0boPRJb89MMU="
+  secret-key: "ahgNSFHEKdbmrVvmKV2GmDGRTOzVAjsJD8k7crjR5yM="
   base-url: ${LIBRARY_SERVICE_BASE_URL}
 server:
   port: 8081
