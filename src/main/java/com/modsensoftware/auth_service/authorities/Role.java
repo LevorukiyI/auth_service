@@ -20,7 +20,8 @@ public enum Role {
             Set.of(
                     Permission.RETURN_BOOK_FOR_USER,
                     Permission.BORROW_BOOK_ON_USER,
-                    Permission.REGISTER_LIBRARY_SERVICE_USER
+                    Permission.REGISTER_LIBRARY_SERVICE_USER,
+                    Permission.ADD_BOOKS_TO_LIBRARY
             )
     ),
     SECRET_KEY(
@@ -28,6 +29,7 @@ public enum Role {
                     Permission.BREATHE,
                     Permission.RETURN_BOOK_FOR_USER,
                     Permission.BORROW_BOOK_ON_USER,
+                    Permission.ADD_BOOKS_TO_LIBRARY,
                     Permission.REGISTER_LIBRARY_SERVICE_USER
             )
     );
