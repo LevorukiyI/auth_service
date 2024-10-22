@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthenticationService authenticationService;
 
-
     @PostMapping("/authenticate")
     @Operation(summary = "Authenticate a user",
             description = "Returns an authentication response containing access and refresh tokens.")

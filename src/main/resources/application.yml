@@ -24,5 +24,8 @@ application:
         expiration: 604800000 # 7 days in milliseconds
     this-service-secret-api-key: "nfgbwtqcByOTIQtwvoI/pa/47uhRSrl03R58b3KJNFg="
 
+library-service:
+  secret-key: "4Ai+5X3ZuK4J+T44sp0RDL48WeieeIq0boPRJb89MMU="
+  base-url: ${LIBRARY_SERVICE_BASE_URL}
 server:
   port: 8081

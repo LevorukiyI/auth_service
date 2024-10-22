@@ -1,5 +1,6 @@
 package com.modsensoftware.auth_service.services;
 
+import com.modsensoftware.auth_service.clients.LibraryServiceClient;
 import com.modsensoftware.auth_service.exceptions.UserAlreadyExistsException;
 import com.modsensoftware.auth_service.exceptions.UserNotFoundException;
 import com.modsensoftware.auth_service.models.JwtRefreshToken;
@@ -10,6 +11,7 @@ import com.modsensoftware.auth_service.requests.AuthenticationRequest;
 import com.modsensoftware.auth_service.requests.RefreshAccessTokenRequest;
 import com.modsensoftware.auth_service.requests.RegisterRequest;
 import com.modsensoftware.auth_service.responses.AuthenticationResponse;
+import com.modsensoftware.auth_service.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LibraryServiceClient libraryServiceClient;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -58,6 +61,9 @@ public class AuthenticationService {
         var refreshToken = jwtService.generateRefreshToken(user);
         userRepository.save(user);
         saveUserRefreshToken(user, refreshToken);
+
+        libraryServiceClient.registerUser(Mapper.from(user));
+
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
