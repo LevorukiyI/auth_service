@@ -1,5 +1,7 @@
-package com.modsensoftware.auth_service.config;
+package com.modsensoftware.auth_service.config.security;
 
+import com.modsensoftware.auth_service.config.ApiKeyAuthenticationFilter;
+import com.modsensoftware.auth_service.config.JwtAuthenticationFilter;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

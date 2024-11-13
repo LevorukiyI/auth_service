@@ -2,7 +2,7 @@ package com.modsensoftware.auth_service.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modsensoftware.auth_service.config.ApplicationConfig;
-import com.modsensoftware.auth_service.config.SecurityConfiguration;
+import com.modsensoftware.auth_service.config.security.SecurityConfiguration;
 import com.modsensoftware.auth_service.models.User;
 import com.modsensoftware.auth_service.repositories.JwtRefreshTokenRepository;
 import com.modsensoftware.auth_service.repositories.UserRepository;
