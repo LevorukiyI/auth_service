@@ -1,4 +1,4 @@
-package com.modsensoftware.auth_service.utils;
+package com.modsensoftware.auth_service.security.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,9 +28,8 @@ public class HttpRequestUtilsTests {
 
     @Test
     public void testExtractSecretKeyNullRequest() {
-        assertThrows(NullPointerException.class, () -> {
-            HttpRequestUtils.extractSecretKey(null);
-        });
+        assertThrows(NullPointerException.class,
+                () -> HttpRequestUtils.extractSecretKey(null));
     }
 
     @Test
@@ -99,9 +98,8 @@ public class HttpRequestUtilsTests {
 
     @Test
     public void testExtractAccessTokenWithNullRequest() {
-        assertThrows(NullPointerException.class, ()-> {
-                    HttpRequestUtils.extractAccessToken((HttpServletRequest) null);
-        });
+        assertThrows(NullPointerException.class,
+                ()-> HttpRequestUtils.extractAccessToken((HttpServletRequest) null));
     }
 
     @Test

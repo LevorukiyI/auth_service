@@ -1,8 +1,8 @@
-package com.modsensoftware.auth_service.config;
+package com.modsensoftware.auth_service.security.filters;
 
-import com.modsensoftware.auth_service.authorities.Role;
+import com.modsensoftware.auth_service.models.authorities.Role;
 import com.modsensoftware.auth_service.services.JwtService;
-import com.modsensoftware.auth_service.utils.HttpRequestUtils;
+import com.modsensoftware.auth_service.security.utils.HttpRequestUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

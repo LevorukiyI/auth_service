@@ -1,41 +1,24 @@
 package com.modsensoftware.auth_service.config.swagger;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.responses.ApiResponse;
-import io.swagger.v3.oas.models.responses.ApiResponses;
-import org.springframework.context.annotation.Bean;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@OpenAPIDefinition(info = @io.swagger.v3.oas.annotations.info.Info(title = "auth-service API", version = "1.0",
+        description = "documentation for auth_service api"))
+@SecurityScheme(name = "Bearer",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT",
+        description = "Use 'Bearer access_token' to authorize.")
+@SecurityScheme(name = "x-api-key",
+        type = SecuritySchemeType.HTTP,
+        scheme = "x-api-key",
+        in = SecuritySchemeIn.HEADER,
+        paramName = "x-api-key",
+        description = "Use 'x-api-key secret_api_key' to authorize.")
 public class OpenApiConfig {
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info().title("auth-service-api")
-                        .version("1.0")
-                        .description("documentation for auth_service api"))
-                .paths(addCustomPaths());
-    }
-
-    private Paths addCustomPaths() {
-        Paths paths = new Paths();
-
-        PathItem logoutPath = new PathItem()
-                .post(new Operation()
-                        .summary("Logout user")
-                        .description("Logs out a user.")
-                        .responses(new ApiResponses()
-                                .addApiResponse("200", new ApiResponse().description("Successfully logged out"))
-                                .addApiResponse("401", new ApiResponse().description("Unauthorized, invalid token"))
-                                .addApiResponse("404", new ApiResponse().description("User not found"))));
-
-
-        paths.addPathItem("/auth/logout", logoutPath);
-        return paths;
-    }
 }

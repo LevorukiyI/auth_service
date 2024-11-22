@@ -1,8 +1,6 @@
 package com.modsensoftware.auth_service.config;
 
 import com.modsensoftware.auth_service.auditing.ApplicationAuditAware;
-import com.modsensoftware.auth_service.repositories.JwtRefreshTokenRepository;
-import com.modsensoftware.auth_service.repositories.UserRepository;
 import com.modsensoftware.auth_service.services.DefaultUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,13 +23,6 @@ import java.util.List;
 public class ApplicationConfig {
 
     private final DefaultUserDetailsService defaultUserDetailsService;
-    private final UserRepository userRepository;
-    private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
-
-    @Bean
-    public JwtLogoutHandler jwtLogoutHandler() {
-        return new JwtLogoutHandler(userRepository, jwtRefreshTokenRepository);
-    }
 
     @Bean
     public AuditorAware<String> auditorAware() {

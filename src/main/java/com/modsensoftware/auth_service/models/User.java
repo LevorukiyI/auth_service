@@ -1,6 +1,6 @@
 package com.modsensoftware.auth_service.models;
 
-import com.modsensoftware.auth_service.authorities.Role;
+import com.modsensoftware.auth_service.models.authorities.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

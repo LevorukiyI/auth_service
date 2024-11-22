@@ -1,15 +1,22 @@
 package com.modsensoftware.auth_service.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.modsensoftware.auth_service.annotations.ContainerTest;
 import com.modsensoftware.auth_service.config.ApplicationConfig;
 import com.modsensoftware.auth_service.config.security.SecurityConfiguration;
+import com.modsensoftware.auth_service.controllers.AuthController;
+import com.modsensoftware.auth_service.dtos.requests.AuthenticationRequest;
+import com.modsensoftware.auth_service.dtos.requests.RefreshAccessTokenRequest;
+import com.modsensoftware.auth_service.dtos.requests.RegisterRequest;
+import com.modsensoftware.auth_service.dtos.responses.AuthenticationResponse;
 import com.modsensoftware.auth_service.models.User;
 import com.modsensoftware.auth_service.repositories.JwtRefreshTokenRepository;
 import com.modsensoftware.auth_service.repositories.UserRepository;
-import com.modsensoftware.auth_service.requests.AuthenticationRequest;
-import com.modsensoftware.auth_service.requests.RefreshAccessTokenRequest;
-import com.modsensoftware.auth_service.requests.RegisterRequest;
-import com.modsensoftware.auth_service.responses.AuthenticationResponse;
+import com.modsensoftware.auth_service.security.filters.ApiKeyAuthenticationFilter;
+import com.modsensoftware.auth_service.services.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +29,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({SecurityConfiguration.class, ApplicationConfig.class})
 @ActiveProfiles("test")
+@ContainerTest
+@WireMockTest(httpPort = 8082)
 public class AuthControllerTest {
 
     @Autowired
@@ -38,24 +48,49 @@ public class AuthControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
+
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    private static final int WIREMOCK_PORT = 8082;
+
+    private WireMockServer wireMockServer;
+
     @BeforeEach
     public void setUp() {
         objectMapper = new ObjectMapper();
+
         jwtRefreshTokenRepository.deleteAll();
         userRepository.deleteAll();
+
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new AuthController(authenticationService))
+                .addFilters(apiKeyAuthenticationFilter)
+                .build();
+
+        wireMockServer = new WireMockServer();
+        WireMock.configureFor("localhost", WIREMOCK_PORT);
+        wireMockServer.start();
+
+        stubFor(WireMock.post(urlEqualTo("/users/register-user"))
+                .withHeader("x-api-key", equalTo("ahgNSFHEKdbmrVvmKV2GmDGRTOzVAjsJD8k7crjR5yM="))
+                .willReturn(aResponse()
+                        .withStatus(200)));
     }
 
     @AfterEach
     public void tearDown() {
         jwtRefreshTokenRepository.deleteAll();
         userRepository.deleteAll();
-    }
 
+        wireMockServer.stop();
+    }
     @Test
     public void testRegistrationSingleUserWithValidData() throws Exception {
         RegisterRequest registerRequest = new RegisterRequest("user", "password");
@@ -150,7 +185,7 @@ public class AuthControllerTest {
         mockMvc.perform(post("/auth/authenticate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authRequest)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -170,13 +205,12 @@ public class AuthControllerTest {
                 .andReturn()
                 .getResponse();
 
-        AuthenticationResponse authResponse = objectMapper.readValue(response.getContentAsString(), AuthenticationResponse.class);
-        String accessToken = authResponse.getAccessToken();
-        String refreshToken = authResponse.getRefreshToken();
+        AuthenticationResponse authResponse = objectMapper.readValue(response.getContentAsString(),
+                AuthenticationResponse.class);
+        String accessToken = authResponse.accessToken();
+        String refreshToken = authResponse.refreshToken();
 
-        RefreshAccessTokenRequest refreshAccessTokenRequest = RefreshAccessTokenRequest.builder()
-                .jwtRefreshToken(refreshToken)
-                .build();
+        RefreshAccessTokenRequest refreshAccessTokenRequest = new RefreshAccessTokenRequest(refreshToken);
 
         mockMvc.perform(post("/auth/refresh-token")
                         .contentType(MediaType.APPLICATION_JSON)

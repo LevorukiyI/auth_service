@@ -1,5 +1,7 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/auth_service_test_db
-    username: postgres
-    password: "%Nw8Fm1qc*HXFh3mK}|9GOzATC}8LQrh"
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+library-service:
+  secret-key: "ahgNSFHEKdbmrVvmKV2GmDGRTOzVAjsJD8k7crjR5yM="
+  base-url: http://localhost:8082

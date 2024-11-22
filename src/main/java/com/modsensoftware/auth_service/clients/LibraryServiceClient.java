@@ -26,7 +26,7 @@ public class LibraryServiceClient {
         HttpEntity<RegisterLibraryUserRequest> entity = new HttpEntity<>(registerUserRequest, headers);
 
         return restTemplate.exchange(
-                libraryServiceBaseUrl + "/users/register-user",
+                libraryServiceBaseUrl + "/users/register",
                 HttpMethod.POST,
                 entity,
                 HttpStatus.class

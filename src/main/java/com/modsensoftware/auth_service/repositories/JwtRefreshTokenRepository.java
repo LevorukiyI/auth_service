@@ -10,4 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface JwtRefreshTokenRepository extends JpaRepository<JwtRefreshToken, Long> {
     @Transactional
     void deleteIfExistsByUser(User user);
+
+    @Transactional
+    JwtRefreshToken save(JwtRefreshToken jwtRefreshToken);
 }

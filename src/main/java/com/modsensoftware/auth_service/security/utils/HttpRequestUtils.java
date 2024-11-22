@@ -1,4 +1,4 @@
-package com.modsensoftware.auth_service.utils;
+package com.modsensoftware.auth_service.security.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
